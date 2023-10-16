@@ -1,7 +1,4 @@
-import json
 from django.http import JsonResponse
-from typing import Any
-from pprint import pprint as print
 import requests
 from pydantic import BaseModel, Field
 
