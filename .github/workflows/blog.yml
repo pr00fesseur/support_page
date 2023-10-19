@@ -32,4 +32,3 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: chartboost/ruff-action@v1
