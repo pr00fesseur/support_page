@@ -1,5 +1,5 @@
-from functools import lru_cache
 from enum import StrEnum
+from functools import lru_cache
 
 
 class Role(StrEnum):
