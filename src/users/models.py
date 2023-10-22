@@ -1,10 +1,11 @@
-from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.db import models
+from django.contrib.auth.models import AbstractUser, PermissionsMixin
 
 from .constants import Role
 from .managers import UserManager
 
 
+# inherited from models.Model
 class User(AbstractUser, PermissionsMixin):
     email = models.CharField(max_length=40, unique=True)
     first_name = models.CharField(max_length=50)
