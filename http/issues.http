@@ -1,0 +1,17 @@
+@baseUrl = http://localhost:8000
+
+
+POST {{baseUrl}}/auth/token/ HTTP/1.1
+content-type: application/json
+
+{
+    "email": "mark@email.com",
+    "password": "@Dm1n#LKJ"
+}
+
+### 
+
+
+GET {{baseUrl}}/issues/ HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk4Njk3OTczLCJpYXQiOjE2OTg2OTYxNzMsImp0aSI6IjAwMDg1YTdlNjBkYTQwNzQ4NWUwYWVlOWIwNjMyZTcwIiwidXNlcl9pZCI6NH0.-CNq0nxapYOfnwuSy441La4wPd928bMUHiveab-o8yg

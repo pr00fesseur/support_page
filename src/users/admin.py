@@ -14,6 +14,5 @@ class UserAdmin(admin.ModelAdmin):
         "is_superuser",
         "is_staff",
         "is_active",
-        "username",
         "email",
     ]
