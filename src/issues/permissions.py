@@ -1,6 +1,7 @@
-from users.constants import Role
 from rest_framework.permissions import BasePermission
+
 from issues.models import Issue
+from users.constants import Role
 
 
 class RoleIsSenior(BasePermission):

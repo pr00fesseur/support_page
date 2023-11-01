@@ -1,9 +1,11 @@
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import CreateAPIView
+from rest_framework.viewsets import ModelViewSet
 
 from .models import Issue
-from .serializers import IssueCreateSerializer, IssueReadonlySerializer, MessageSerializer
-from .permissions import RoleIsAdmin, RoleIsJunior, RoleIsSenior, IssueParticipant
+from .permissions import (IssueParticipant, RoleIsAdmin, RoleIsJunior,
+                          RoleIsSenior)
+from .serializers import (IssueCreateSerializer, IssueReadonlySerializer,
+                          MessageSerializer)
 
 
 class IssueApiSet(ModelViewSet):
@@ -30,7 +32,6 @@ class IssueApiSet(ModelViewSet):
         if self.action == "create":
             return IssueCreateSerializer
         return IssueReadonlySerializer
-
 
 
 class MessageCreateAPI(CreateAPIView):
