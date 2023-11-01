@@ -15,14 +15,19 @@ class IssueCreateSerializer(serializers.ModelSerializer):
     status = serializers.CharField(required=False)
     junior = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
-    # junior = serializers.ModelField(...)
-
     class Meta:
         model = Issue
         fields = ["id", "title", "body", "junior", "status"]
-
+   
     def validate(self, attrs: dict) -> dict:
-        attrs["status"] = Status.OPENED
+        user = self.context["request"].user
+
+        # Определяем роль пользователя
+        if user.role == "junior":
+            attrs["status"] = Status.OPENED
+        elif user.role == "senior":
+            attrs["status"] = Status.ASSIGNED
+
         return attrs
 
 
@@ -43,3 +48,8 @@ class MessageSerializer(serializers.ModelSerializer):
         attrs["author"] = request.user
 
         return attrs
+
+class IssueListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Issue
+        fields = ["id", "title", "body", "status"]
