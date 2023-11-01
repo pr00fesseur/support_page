@@ -3,6 +3,7 @@ from shared.django import TimestampMixin
 from django.conf import settings
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 
 User = get_user_model()
 
@@ -28,13 +29,6 @@ class Issue(TimestampMixin):
         db_table = "issues"
 
 
-# issue: Issue = Issue.objects.first()
-# issue.junior: ==> users.User
-
-# john: User = User.objects.get(email='john@email.com')
-# john.issues.first().messages.all()
-
-
 class Message(TimestampMixin):
     content = models.CharField(max_length=100)
 
@@ -47,3 +41,9 @@ class Message(TimestampMixin):
 
     class Meta:
         db_table = "issues_messages"
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    role = models.CharField(max_length=20, choices=[('junior', 'Junior'), ('senior', 'Senior')], default='junior')
+    issues = models.ManyToManyField(Issue, related_name='user_profiles')
