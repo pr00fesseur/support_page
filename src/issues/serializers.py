@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from rest_framework import serializers
 
 from .constants import Status
 from .models import Issue, Message
+from .serializers import IssueSerializer, MessageSerializer
 
 
 class IssueReadonlySerializer(serializers.ModelSerializer):
@@ -18,7 +18,7 @@ class IssueCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Issue
         fields = ["id", "title", "body", "junior", "status"]
-   
+
     def validate(self, attrs: dict) -> dict:
         user = self.context["request"].user
 
@@ -48,6 +48,7 @@ class MessageSerializer(serializers.ModelSerializer):
         attrs["author"] = request.user
 
         return attrs
+
 
 class IssueListSerializer(serializers.ModelSerializer):
     class Meta:

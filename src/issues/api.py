@@ -1,14 +1,14 @@
+
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import CreateAPIView
+from rest_framework import viewsets
 
-from .models import Issue
+from .models import Issue, Message
+from .permissions import IssueParticipant, RoleIsAdmin, RoleIsJunior, RoleIsSenior
 from .serializers import IssueCreateSerializer, IssueReadonlySerializer, MessageSerializer
-from .permissions import RoleIsAdmin, RoleIsJunior, RoleIsSenior, IssueParticipant
-
 
 class IssueApiSet(ModelViewSet):
     queryset = Issue.objects.all()
-    # permission_classes = [RoleIsAdmin]
 
     def get_permissions(self):
         if self.action == "list":
@@ -31,9 +31,26 @@ class IssueApiSet(ModelViewSet):
             return IssueCreateSerializer
         return IssueReadonlySerializer
 
-
-
 class MessageCreateAPI(CreateAPIView):
     serializer_class = MessageSerializer
     lookup_field = "issue_id"
     lookup_url_kwarg = "issue_id"
+
+class CreateMessageView(CreateAPIView):
+    serializer_class = MessageSerializer
+    permission_classes = [IssueParticipant]
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user, issue=self.get_issue())
+
+    def get_issue(self):
+        issue_id = self.kwargs.get("issue_id")
+        return Issue.objects.get(pk=issue_id)
+
+class ListMessagesView(viewsets.ReadOnlyModelViewSet):
+    serializer_class = MessageSerializer
+    permission_classes = [IssueParticipant]
+
+    def get_queryset(self):
+        issue_id = self.kwargs.get("issue_id")
+        return Message.objects.filter(issue=issue_id)
