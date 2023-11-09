@@ -4,16 +4,16 @@ from django.utils import timezone
 
 from .constants import Role
 from .managers import UserManager
+from django.contrib.auth import get_user_model
+import uuid
 
-
-# inherited from models.Model
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.CharField(max_length=40, unique=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
 
     is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
 
     date_joined = models.DateTimeField(default=timezone.now)
 
@@ -41,3 +41,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             return f"{self.first_name} {self.last_name}"
         else:
             return self.email
+
+class ActivationKey(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    key = models.UUIDField(default=uuid.uuid4, unique=True)
