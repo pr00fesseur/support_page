@@ -1,11 +1,13 @@
-
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.generics import CreateAPIView
 from rest_framework import viewsets
+from rest_framework.generics import CreateAPIView
+from rest_framework.viewsets import ModelViewSet
 
 from .models import Issue, Message
-from .permissions import IssueParticipant, RoleIsAdmin, RoleIsJunior, RoleIsSenior
-from .serializers import IssueCreateSerializer, IssueReadonlySerializer, MessageSerializer
+from .permissions import (IssueParticipant, RoleIsAdmin, RoleIsJunior,
+                          RoleIsSenior)
+from .serializers import (IssueCreateSerializer, IssueReadonlySerializer,
+                          MessageSerializer)
+
 
 class IssueApiSet(ModelViewSet):
     queryset = Issue.objects.all()
@@ -31,10 +33,12 @@ class IssueApiSet(ModelViewSet):
             return IssueCreateSerializer
         return IssueReadonlySerializer
 
+
 class MessageCreateAPI(CreateAPIView):
     serializer_class = MessageSerializer
     lookup_field = "issue_id"
     lookup_url_kwarg = "issue_id"
+
 
 class CreateMessageView(CreateAPIView):
     serializer_class = MessageSerializer
@@ -46,6 +50,7 @@ class CreateMessageView(CreateAPIView):
     def get_issue(self):
         issue_id = self.kwargs.get("issue_id")
         return Issue.objects.get(pk=issue_id)
+
 
 class ListMessagesView(viewsets.ReadOnlyModelViewSet):
     serializer_class = MessageSerializer

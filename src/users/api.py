@@ -1,15 +1,14 @@
 import json
-from django.http import JsonResponse
-from rest_framework.generics import CreateAPIView, GenericAPIView
-from rest_framework import serializers, permissions, status
-from rest_framework.response import Response
-from django.contrib.auth.hashers import make_password
-from .models import User, ActivationKey
-from .services import send_user_activation_email
-from .services import ActivationSerializer
 
-from rest_framework import status
+from django.contrib.auth.hashers import make_password
+from django.http import JsonResponse
+from rest_framework import permissions, serializers, status
+from rest_framework.generics import CreateAPIView, GenericAPIView
+from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from .models import ActivationKey, User
+from .services import ActivationSerializer, send_user_activation_email
 
 
 # FBV
@@ -85,7 +84,13 @@ class UserActivationView(APIView):
                 user.is_active = True
                 user.save()
                 activation_obj.delete()
-                return Response({"message": "Your email is successfully activated."}, status=status.HTTP_200_OK)
+                return Response(
+                    {"message": "Your email is successfully activated."},
+                    status=status.HTTP_200_OK,
+                )
             except ActivationKey.DoesNotExist:
-                return Response({"message": "Invalid activation key."}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"message": "Invalid activation key."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
