@@ -4,8 +4,8 @@ from .api import (UserActivateAPI, UserActivationView, UserCreateAPI,
                   UserRetrieveAPI)
 
 urlpatterns = [
-    path("", UserCreateAPI.as_view()),
-    path("", UserRetrieveAPI.as_view()),
-    path("", UserActivateAPI.as_view()),
-    path("", UserActivationView.as_view()),
+    path("create/", UserCreateAPI.as_view(), name="user-create"),
+    path("retrieve/", UserRetrieveAPI.as_view(), name="user-retrieve"),
+    path("activate-api/", UserActivateApi.as_view(), name="activate-api"),
+    path("activate-view/", UserActivationView.as_view(), name="activate-view"),
 ]
