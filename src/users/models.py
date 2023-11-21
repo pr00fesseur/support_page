@@ -1,11 +1,13 @@
+import uuid
+
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils import timezone
 
 from .constants import Role
 from .managers import UserManager
-from django.contrib.auth import get_user_model
-import uuid
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.CharField(max_length=40, unique=True)
@@ -41,6 +43,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             return f"{self.first_name} {self.last_name}"
         else:
             return self.email
+
 
 class ActivationKey(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
