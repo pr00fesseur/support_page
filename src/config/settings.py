@@ -30,8 +30,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config("DJANGO_SECRET_KEY")
 DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
-ALLOWED_HOSTS = config("DJANGO_ALLOWED_HOSTS", default="", cast=Csv())
-
+ALLOWED_HOSTS = [
+    element for element in os.getenv("DJANGO_ALLOWED_HOSTS").split(",") if element
+]
 #SECRET_KEY = "django-insecure-pgm*y^!x#ck2he_k@kko3##a*6@8-2fsh=o56cwxdt#kf3ze%x"
 #ALLOWED_HOSTS = ["*"]
 #DEBUG = True
@@ -185,10 +186,7 @@ EMAIL_PORT = 1025
 EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
 
-CELERY_BROKER_URL = config("CELERY_BROKER_URL", default="redis://localhost:6379/0")
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'UTC'
+CELERY_BROKER_URL = os.getenv(
+    "DJANGO_CELERY_BROKER_URL", default="redis://broker:6379/0"
+)
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL

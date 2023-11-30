@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+
+  broker:
+    image: "redis"
+    container_name: hillel_support_broker
+
+  database:
+    image: "postgres:16"
+    container_name: hillel_support_db
+    env_file: ".env"
+    # environment:
+    #   - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - "pg_data:/var/lib/postgresql/data"
+
+  app:
+    build:
+      context: .
+      dockerfile: "Dockerfile"
+    image: hillel_support
+    container_name: hillel_support_app
+    volumes:
+      - ".:/app/"
+    ports:
+      - "8000:8000"
+    env_file: ".env"
+    depends_on:
+      - database
+      - broker
+
+volumes:
+  pg_data: {}
