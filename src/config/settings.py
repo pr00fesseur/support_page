@@ -10,8 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from datetime import timedelta
+from decouple import config, Csv
+
+
+
+import os
 from pathlib import Path
+from datetime import timedelta
+from distutils.util import strtobool
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,14 +27,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-pgm*y^!x#ck2he_k@kko3##a*6@8-2fsh=o56cwxdt#kf3ze%x"
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+SECRET_KEY = config("DJANGO_SECRET_KEY")
+DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
+ALLOWED_HOSTS = [
+    element for element in os.getenv("DJANGO_ALLOWED_HOSTS").split(",") if element
+]
+#SECRET_KEY = "django-insecure-pgm*y^!x#ck2he_k@kko3##a*6@8-2fsh=o56cwxdt#kf3ze%x"
+#ALLOWED_HOSTS = ["*"]
+#DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
 
-# Application definition
 
 DJANGO_APPS = [
     "django.contrib.admin",
@@ -174,13 +183,10 @@ SIMPLE_JWT = {
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "localhost"
 EMAIL_PORT = 1025
-EMAIL_HOST_USER = "mailhog"
-EMAIL_HOST_PASSWORD = "mailhog"
+EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'UTC'
+CELERY_BROKER_URL = os.getenv(
+    "DJANGO_CELERY_BROKER_URL", default="redis://broker:6379/0"
+)
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL

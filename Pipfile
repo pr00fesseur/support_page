@@ -10,10 +10,13 @@ pydantic = "~=2.4"
 djangorestframework = "~=3.14"
 djangorestframework-simplejwt = { version = "~=5.3", extras = "crypto" }
 celery = {version = "*", extras = ["redis"]}
+gunicorn = "*"
+psycopg2-binary = "~=2.9.9"
 
 [dev-packages]
 black = "~=23.7"
 grequests = "*"
+django-stubs = "~=1.2"
 ipdb = "*"
 isort = "~=5.12"
 mypy = "~=1.5"

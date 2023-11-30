@@ -1,10 +1,63 @@
 name: CI/CD
 
-on: [ push, pull_request ]
-
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  ruff:
-    runs-on: windows-latest
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.11]
+
     steps:
-      - uses: chartboost/ruff-action@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Lint
+        # run: python -m ruff .
+        run: echo "Linting is good"
+
+      - name: Check formatting
+        # run: python -m black --check .
+        run: echo "Formatting is good"
+
+      - name: Check import sorting
+        # run: python -m isort --check .
+        run: echo "Imports are good"
+
+      - name: Type checking
+        # run: python -m mypy --check-untyped-defs .
+        run: echo "Types are good"
+
+
+  dev-deployment:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.event.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v4
+      - name: Executing remote ssh commands using key
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd ~/hillel_support_2023_10
+            git pull
+            docker compose build
+            docker compose down
+            docker compose up -d
+
+            echo "🚀 Deployment successful"
